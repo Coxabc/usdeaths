@@ -1,17 +1,23 @@
-library(tidyverse)
-
-data_multiple_mortality_2017 <- tribble(
+data_mortality_multiple_2021 <- tribble(
   ~name,                         ~start, ~end, ~size, ~type, ~description,                                          ~codes,
 
-
-  "reserved_1",                   1,   19,   19,  "str",  "Reserved positions",                                   "",
+  # ── General (positions 1-20) ─────────────────────────────────────────────────
+  "reserved_1",                   1,   18,   18,  "str",  "Reserved positions",                                   "",
+  "record_type",                 19,   19,    1,  "int",  "Record type",                                          "1=Residents (state and county of occurrence and residence are the same)|2=Nonresidents (state and/or county of occurrence and residence are different)",
   "resident_status",             20,   20,    1,  "int",  "Resident status (US Occurrence)",                      "1=Residents|2=Intrastate Nonresidents|3=Interstate Nonresidents|4=Foreign Residents",
-  "reserved_2",                  21,   60,   40,  "str",  "Reserved positions",                                   "",
-  "education_1989",              61,   62,    2,  "int",  "Education (1989 revision; blank if 2003 format used)", "00=No formal education|01-08=Years of elementary school|09=1 year of high school|10=2 years of high school|11=3 years of high school|12=4 years of high school|13=1 year of college|14=2 years of college|15=3 years of college|16=4 years of college|17=5 or more years of college|99=Not stated",
-  "education",                   63,   63,    1,  "int",  "Education (2003 revision; blank if 1989 format used)", "1=8th grade or less|2=9-12th grade no diploma|3=High school graduate or GED|4=Some college no degree|5=Associate degree|6=Bachelor's degree|7=Master's degree|8=Doctorate or professional degree|9=Unknown",
-  "education_report_flag",       64,   64,    1,  "int",  "Education reporting flag",                             "0=1989 revision|1=2003 revision|2=No education item on certificate",
+
+  "reserved_2",                  21,   62,   42,  "str",  "Reserved positions",                                   "",
+
+  # ── Education (positions 63-64) ───────────────────────────────────────────────
+  # NOTE: 1989 education revision removed as of 2021; all states now use 2003 format.
+  "education",                   63,   63,    1,  "int",  "Education (2003 revision)",                            "1=8th grade or less|2=9-12th grade no diploma|3=High school graduate or GED|4=Some college no degree|5=Associate degree|6=Bachelor's degree|7=Master's degree|8=Doctorate or professional degree|9=Unknown",
+  "education_report_flag",       64,   64,    1,  "int",  "Education reporting flag",                             "1=2003 revision of education item on certificate|2=No education item on certificate",
+
+  # ── Month of death ────────────────────────────────────────────────────────────
   "month_of_death",              65,   66,    2,  "int",  "Month of death",                                       "01=January|02=February|03=March|04=April|05=May|06=June|07=July|08=August|09=September|10=October|11=November|12=December",
   "reserved_3",                  67,   68,    2,  "str",  "Reserved positions",                                   "",
+
+  # ── Sex & Age (positions 69-82) ───────────────────────────────────────────────
   "sex",                         69,   69,    1,  "str",  "Sex",                                                  "M=Male|F=Female",
   "detail_age",                  70,   73,    4,  "int",  "Detail age (pos 70=age unit, 71-73=value)",            "1=Years|2=Months|4=Days|5=Hours|6=Minutes|9=Age not stated",
   "age_substitution_flag",       74,   74,    1,  "str",  "Age substitution flag",                                "1=Calculated age substituted|blank=Not substituted",
@@ -19,18 +25,28 @@ data_multiple_mortality_2017 <- tribble(
   "age_recode_27",               77,   78,    2,  "int",  "Age recode 27",                                        "01=Under 1 month|02=1-11 months|03=1 year|04=2 years|05=3 years|06=4 years|07=5-9 years|08=10-14 years|09=15-19 years|10=20-24 years|11=25-29 years|12=30-34 years|13=35-39 years|14=40-44 years|15=45-49 years|16=50-54 years|17=55-59 years|18=60-64 years|19=65-69 years|20=70-74 years|21=75-79 years|22=80-84 years|23=85-89 years|24=90-94 years|25=95-99 years|26=100 years and older|27=Age not stated",
   "age_recode_12",               79,   80,    2,  "int",  "Age recode 12",                                        "01=Under 1 year|02=1-4 years|03=5-14 years|04=15-24 years|05=25-34 years|06=35-44 years|07=45-54 years|08=55-64 years|09=65-74 years|10=75-84 years|11=85 years and older|12=Age not stated",
   "infant_age_recode_22",        81,   82,    2,  "int",  "Infant age recode 22",                                 "blank=Age 1 year and older or not stated|01=Under 1 hour|02=1-23 hours|03=1 day|04=2 days|05=3 days|06=4 days|07=5 days|08=6 days|09=7-13 days|10=14-20 days|11=21-27 days|12=1 month|13=2 months|14=3 months|15=4 months|16=5 months|17=6 months|18=7 months|19=8 months|20=9 months|21=10 months|22=11 months",
+
+  # ── Place of death / marital / day (positions 83-85) ─────────────────────────
   "place_of_death",              83,   83,    1,  "int",  "Place of death and decedent's status",                 "1=Hospital inpatient|2=Hospital outpatient or ER|3=Hospital dead on arrival|4=Decedent's home|5=Hospice facility|6=Nursing home/long term care|7=Other|9=Place of death unknown",
   "marital_status",              84,   84,    1,  "str",  "Marital status",                                       "S=Never married/single|M=Married|W=Widowed|D=Divorced|U=Unknown",
   "day_of_week_of_death",        85,   85,    1,  "int",  "Day of week of death",                                 "1=Sunday|2=Monday|3=Tuesday|4=Wednesday|5=Thursday|6=Friday|7=Saturday|9=Unknown",
+
   "reserved_4",                  86,  101,   16,  "str",  "Reserved positions",                                   "",
-  "current_data_year",          102,  105,    4,  "int",  "Current data year",                                    "2017=2017",
+
+  # ── Administrative / clinical flags (positions 102-143) ──────────────────────
+  "current_data_year",          102,  105,    4,  "int",  "Current data year",                                    "2021=2021",
   "injury_at_work",             106,  106,    1,  "str",  "Injury at work",                                       "Y=Yes|N=No|U=Unknown",
   "manner_of_death",            107,  107,    1,  "str",  "Manner of death",                                      "1=Accident|2=Suicide|3=Homicide|4=Pending investigation|5=Could not determine|6=Self-Inflicted|7=Natural|blank=Not specified",
-  "method_of_disposition",      108,  108,    1,  "str",  "Method of disposition",                                "B=Burial|C=Cremation|D=Other|U=Unknown",
+  "method_of_disposition",      108,  108,    1,  "str",  "Method of disposition",                                "B=Burial|C=Cremation|D=Donation|E=Entombment|O=Other|R=Removal from jurisdiction|U=Unknown",
   "autopsy",                    109,  109,    1,  "str",  "Autopsy",                                              "Y=Yes|N=No|U=Unknown",
+
   "reserved_5",                 110,  143,   34,  "str",  "Reserved positions",                                   "",
+
+  # ── Activity & place of injury (positions 144-145) ───────────────────────────
   "activity_code",              144,  144,    1,  "str",  "Activity code",                                        "0=Sports activity|1=Leisure activity|2=Working for income|3=Other types of work|4=Resting/sleeping/eating|8=Other specified activities|9=Unspecified activity|blank=Not applicable",
   "place_of_injury",            145,  145,    1,  "str",  "Place of injury (causes W00-Y34 except Y06 and Y07)",  "0=Home|1=Residential institution|2=School/institution/public admin area|3=Sports and athletics area|4=Street and highway|5=Trade and service area|6=Industrial and construction area|7=Farm|8=Other specified places|9=Unspecified place|blank=Causes other than W00-Y34 except Y06 and Y07",
+
+  # ── Underlying cause of death (positions 146-162) ────────────────────────────
   "icd_code",                   146,  149,    4,  "str",  "Underlying cause of death ICD-10 code",                "",
   "cause_recode_358",           150,  152,    3,  "int",  "358 cause recode (range 001-456)",                     "",
   "reserved_6",                 153,  153,    1,  "str",  "Reserved position",                                    "",
@@ -38,6 +54,8 @@ data_multiple_mortality_2017 <- tribble(
   "infant_cause_recode_130",    157,  159,    3,  "int",  "130 infant cause recode (range 001-158; blank for non-infant records)", "",
   "cause_recode_39",            160,  161,    2,  "int",  "39 cause recode (range 01-42)",                        "",
   "reserved_7",                 162,  162,    1,  "str",  "Reserved position",                                    "",
+
+  # ── Entity-axis conditions (positions 163-304) ───────────────────────────────
   "num_entity_axis_conditions", 163,  164,    2,  "int",  "Number of entity-axis conditions (range 00-20)",       "",
   "condition_1",                165,  171,    7,  "str",  "Entity-axis condition 1 (pos1=part/line, pos2=sequence, pos3-6=ICD code, pos7=blank)", "part_line: 1=Part I line 1a|2=Part I line 2b|3=Part I line 3c|4=Part I line 4d|5=Part I line 5e|6=Part II",
   "condition_2",                172,  178,    7,  "str",  "Entity-axis condition 2",                              "",
@@ -59,7 +77,10 @@ data_multiple_mortality_2017 <- tribble(
   "condition_18",               284,  290,    7,  "str",  "Entity-axis condition 18",                             "",
   "condition_19",               291,  297,    7,  "str",  "Entity-axis condition 19",                             "",
   "condition_20",               298,  304,    7,  "str",  "Entity-axis condition 20",                             "",
+
   "reserved_8",                 305,  340,   36,  "str",  "Reserved positions",                                   "",
+
+  # ── Record-axis conditions (positions 341-443) ───────────────────────────────
   "num_record_axis_conditions", 341,  342,    2,  "int",  "Number of record-axis conditions (range 00-20)",       "",
   "reserved_9",                 343,  343,    1,  "str",  "Reserved position",                                    "",
   "record_condition_1",         344,  348,    5,  "str",  "Record-axis condition 1 (pos1-4=ICD code, pos5=maternal death flag)", "",
@@ -82,16 +103,32 @@ data_multiple_mortality_2017 <- tribble(
   "record_condition_18",        429,  433,    5,  "str",  "Record-axis condition 18",                             "",
   "record_condition_19",        434,  438,    5,  "str",  "Record-axis condition 19",                             "",
   "record_condition_20",        439,  443,    5,  "str",  "Record-axis condition 20",                             "",
-  "reserved_10",                444,  444,    1,  "str",  "Reserved position",                                    "",
-  "race",                       445,  446,    2,  "int",  "Race (reported or bridged)",                           "01=White|02=Black|03=American Indian (includes Aleuts and Eskimos)|04=Chinese|05=Japanese|06=Hawaiian (includes Part-Hawaiian)|07=Filipino|18=Asian Indian|28=Korean|38=Samoan|48=Vietnamese|58=Guamanian|68=Other Asian or Pacific Islander (areas reporting 18-58)|78=Combined other Asian or Pacific Islander",
-  "bridged_race_flag",          447,  447,    1,  "str",  "Bridged race flag",                                    "1=Race is bridged|blank=Race is not bridged",
+
+  # ── Race and Hispanic Origin (positions 444-490) ──────────────────────────────
+  # NOTE: Bridged-race variables (445-450 in 2018-2020) were REMOVED as of 2021.
+  #       All states completed the 2003 death certificate transition by 2018,
+  #       so only the 1997 OMB race variables remain.
+  "reserved_10",                444,  447,    4,  "str",  "Reserved positions",                                   "",
   "race_imputation_flag",       448,  448,    1,  "str",  "Race imputation flag",                                 "1=Unknown race is imputed|2=All other races is imputed|blank=Race is not imputed",
-  "race_recode_3",              449,  449,    1,  "int",  "Race recode 3",                                        "1=White|2=Races other than White or Black|3=Black",
-  "race_recode_5",              450,  450,    1,  "int",  "Race recode 5",                                        "0=Other (Puerto Rico only)|1=White|2=Black|3=American Indian|4=Asian or Pacific Islander",
-  "reserved_11",                451,  483,   33,  "str",  "Reserved positions",                                   "",
+  "reserved_11",                449,  483,   35,  "str",  "Reserved positions",                                   "",
+
+  # ── Hispanic origin (positions 484-488) ──────────────────────────────────────
   "hispanic_origin",            484,  486,    3,  "int",  "Hispanic origin",                                      "100-199=Non-Hispanic|200-209=Spaniard|210-219=Mexican|220=Central and South American|221-230=Central American|231-249=South American|250-259=Latin American|260-269=Puerto Rican|270-274=Cuban|275-279=Dominican|280-299=Other Hispanic|996-999=Unknown",
-  "reserved_12",                487,  487,    1,  "str",  "Reserved position",                                    "",
-  "hispanic_origin_race_recode", 488,  488,    1,  "int",  "Hispanic origin/race recode",                          "1=Mexican|2=Puerto Rican|3=Cuban|4=Central or South American|5=Other or unknown Hispanic|6=Non-Hispanic white|7=Non-Hispanic black|8=Non-Hispanic other races|9=Hispanic origin unknown"
+  "reserved_12",                487,  488,    2,  "str",  "Reserved positions",                                   "",
+
+  # ── Race recode 40 (positions 489-490) ───────────────────────────────────────
+  # NOTE: Codes 01-40 only; code 99 (Unknown/Other) not present in 2021+
+  "race_recode_40",             489,  490,    2,  "int",  "Race recode 40 (1997 OMB multiple-race combinations)", "01=White|02=Black|03=American Indian or Alaskan Native (AIAN)|04=Asian Indian|05=Chinese|06=Filipino|07=Japanese|08=Korean|09=Vietnamese|10=Other or Multiple Asian|11=Hawaiian|12=Guamanian|13=Samoan|14=Other or Multiple Pacific Islander|15=Black and White|16=Black and AIAN|17=Black and Asian|18=Black and Native Hawaiian or Other Pacific Islander (NHOPI)|19=AIAN and White|20=AIAN and Asian|21=AIAN and NHOPI|22=Asian and White|23=Asian and NHOPI|24=NHOPI and White|25=Black, AIAN and White|26=Black, AIAN and Asian|27=Black, AIAN and NHOPI|28=Black, Asian and White|29=Black, Asian and NHOPI|30=Black, NHOPI and White|31=AIAN, Asian and White|32=AIAN, NHOPI and White|33=AIAN, Asian and NHOPI|34=Asian, NHOPI and White|35=Black, AIAN, Asian and White|36=Black, AIAN, Asian and NHOPI|37=Black, AIAN, NHOPI and White|38=Black, Asian, NHOPI and White|39=AIAN, Asian, NHOPI and White|40=Black, AIAN, Asian, NHOPI and White",
+
+  "reserved_13",                491,  805,  315,  "str",  "Reserved positions",                                   "",
+
+  # ── Decedent's usual occupation and industry (positions 806-817) ─────────────
+  # 49 states and NYC participating; RI and DC excluded.
+  "occupation_4digit",          806,  809,    4,  "int",  "Occupation 4-digit Census code (2012 codes)",          "",
+  "occupation_recode",          810,  811,    2,  "int",  "Occupation recode (2-digit NHIS categories)",          "01=Management occupations|02=Business and financial operations|03=Computer and mathematical|04=Architecture and engineering|05=Life, physical, and social science|06=Community and social services|07=Legal|08=Education, training, and library|09=Arts, design, entertainment, sports, and media|10=Healthcare practitioners and technical|11=Healthcare support|12=Protective service|13=Food preparation and serving|14=Building and grounds cleaning and maintenance|15=Personal care and service|16=Sales and related|17=Office and administrative support|18=Farming, fishing, and forestry|19=Construction and extraction|20=Installation, maintenance, and repair|21=Production|22=Transportation and material moving|24=Military|25=Other—Misc (exc housewife)|26=Other—Housewife",
+  "industry_4digit",            812,  815,    4,  "int",  "Industry 4-digit Census code (2012 codes)",            "",
+  "industry_recode",            816,  817,    2,  "int",  "Industry recode (2-digit NHIS categories)",            "01=Agriculture, forestry, fishing and hunting|02=Mining|03=Utilities|04=Construction|05=Manufacturing|06=Wholesale trade|07=Retail trade|08=Transportation and warehousing|09=Information|10=Finance and insurance|11=Real estate and rental and leasing|12=Professional, scientific, and technical services|13=Management of companies and enterprises|14=Admin. and support and waste mgmt and remediation svcs|15=Education services|16=Healthcare and social assistance|17=Arts, entertainment, and recreation|18=Accommodation and food services|19=Other services (except public administration)|20=Public administration|22=Military|23=Other—Misc, Missing"
 )
 
-usethis::use_data(data_multiple_mortality_2017, overwrite = TRUE)
+
+usethis::use_data(data_mortality_multiple_2021, overwrite = TRUE)

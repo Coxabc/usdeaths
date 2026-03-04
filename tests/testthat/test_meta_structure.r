@@ -1,3 +1,5 @@
+library(stringr)
+
 for (meta_name in all_metas) {
     e <- new.env()
     data(list = meta_name, package = "usdeaths", envir = e)

@@ -1,4 +1,3 @@
-
 data_mortality_multiple_2023 <- tribble(
     ~name, ~start, ~end, ~size, ~type, ~description, ~codes,
     "reserved_1", 1, 18, 18, "str", "Reserved positions", "",
@@ -96,4 +95,3 @@ data_mortality_multiple_2023 <- tribble(
 
 
 usethis::use_data(data_mortality_multiple_2023, overwrite = TRUE)
-

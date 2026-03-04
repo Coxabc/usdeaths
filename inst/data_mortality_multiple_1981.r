@@ -1,4 +1,3 @@
-
 data_mortality_multiple_1981 <- tribble(
   ~name,                                     ~start, ~end, ~size, ~type,  ~description,
   "data_year",              1,    2,     2,  "numeric",   "Last 2 digits of current data year (e.g. 81 = 1981)",
@@ -105,4 +104,3 @@ data_mortality_multiple_1981 <- tribble(
 )
 
 usethis::use_data(data_mortality_multiple_1981, overwrite = TRUE)
-

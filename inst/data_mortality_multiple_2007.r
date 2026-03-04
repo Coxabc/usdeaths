@@ -1,4 +1,3 @@
-
 # NOTE: 2007 marks a major structural change from 2003/2004.
 # A new vital statistics data access policy excluding geographic identifiers
 # goes into effect with the 2007 data year.
