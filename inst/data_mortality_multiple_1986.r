@@ -1,4 +1,3 @@
-
 data_mortality_multiple_1986 <- tribble(
   ~name,                                     ~start, ~end,  ~size, ~type,       ~description,
 
@@ -113,4 +112,3 @@ data_mortality_multiple_1986 <- tribble(
 )
 
 usethis::use_data(data_mortality_multiple_1986, overwrite = TRUE)
-

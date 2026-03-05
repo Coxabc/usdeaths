@@ -1,4 +1,3 @@
-
 data_mortality_multiple_2003 <- tribble(
   ~name,                        ~start, ~end, ~size, ~type, ~description,                                                        ~codes,
   "reserved_1",                 1,      18,   18,    "str", "Reserved positions (blank)",                                         "",

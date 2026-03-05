@@ -1,6 +1,4 @@
-library(tidyverse)
-
-data_multiple_mortality_2022 <- tribble(
+data_mortality_multiple_2022 <- tribble(
   ~name,                         ~start, ~end, ~size, ~type, ~description,                                          ~codes,
 
   # ── General / reserved ──────────────────────────────────────────────────────
@@ -144,4 +142,4 @@ data_multiple_mortality_2022 <- tribble(
 )
 
 
-usethis::use_data(data_multiple_mortality_2022, overwrite = TRUE)
+usethis::use_data(data_mortality_multiple_2022, overwrite = TRUE)

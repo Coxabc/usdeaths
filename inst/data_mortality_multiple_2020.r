@@ -1,19 +1,16 @@
-library(tidyverse)
-
-data_multiple_mortality_2021 <- tribble(
+data_mortality_multiple_2020 <- tribble(
   ~name,                         ~start, ~end, ~size, ~type, ~description,                                          ~codes,
 
-  # ── General (positions 1-20) ─────────────────────────────────────────────────
-  "reserved_1",                   1,   18,   18,  "str",  "Reserved positions",                                   "",
-  "record_type",                 19,   19,    1,  "int",  "Record type",                                          "1=Residents (state and county of occurrence and residence are the same)|2=Nonresidents (state and/or county of occurrence and residence are different)",
+  # ── General / reserved ──────────────────────────────────────────────────────
+  "reserved_1",                   1,   19,   19,  "str",  "Reserved positions",                                   "",
   "resident_status",             20,   20,    1,  "int",  "Resident status (US Occurrence)",                      "1=Residents|2=Intrastate Nonresidents|3=Interstate Nonresidents|4=Foreign Residents",
 
-  "reserved_2",                  21,   62,   42,  "str",  "Reserved positions",                                   "",
+  "reserved_2",                  21,   60,   40,  "str",  "Reserved positions",                                   "",
 
-  # ── Education (positions 63-64) ───────────────────────────────────────────────
-  # NOTE: 1989 education revision removed as of 2021; all states now use 2003 format.
-  "education",                   63,   63,    1,  "int",  "Education (2003 revision)",                            "1=8th grade or less|2=9-12th grade no diploma|3=High school graduate or GED|4=Some college no degree|5=Associate degree|6=Bachelor's degree|7=Master's degree|8=Doctorate or professional degree|9=Unknown",
-  "education_report_flag",       64,   64,    1,  "int",  "Education reporting flag",                             "1=2003 revision of education item on certificate|2=No education item on certificate",
+  # ── Education (positions 61-64) ──────────────────────────────────────────────
+  "education_1989",              61,   62,    2,  "int",  "Education (1989 revision; blank if 2003 format used)", "00=No formal education|01-08=Years of elementary school|09=1 year of high school|10=2 years of high school|11=3 years of high school|12=4 years of high school|13=1 year of college|14=2 years of college|15=3 years of college|16=4 years of college|17=5 or more years of college|99=Not stated",
+  "education",                   63,   63,    1,  "int",  "Education (2003 revision; blank if 1989 format used)", "1=8th grade or less|2=9-12th grade no diploma|3=High school graduate or GED|4=Some college no degree|5=Associate degree|6=Bachelor's degree|7=Master's degree|8=Doctorate or professional degree|9=Unknown",
+  "education_report_flag",       64,   64,    1,  "int",  "Education reporting flag",                             "0=1989 revision|1=2003 revision|2=No education item on certificate",
 
   # ── Month of death ────────────────────────────────────────────────────────────
   "month_of_death",              65,   66,    2,  "int",  "Month of death",                                       "01=January|02=February|03=March|04=April|05=May|06=June|07=July|08=August|09=September|10=October|11=November|12=December",
@@ -36,7 +33,7 @@ data_multiple_mortality_2021 <- tribble(
   "reserved_4",                  86,  101,   16,  "str",  "Reserved positions",                                   "",
 
   # ── Administrative / clinical flags (positions 102-143) ──────────────────────
-  "current_data_year",          102,  105,    4,  "int",  "Current data year",                                    "2021=2021",
+  "current_data_year",          102,  105,    4,  "int",  "Current data year",                                    "2020=2020",
   "injury_at_work",             106,  106,    1,  "str",  "Injury at work",                                       "Y=Yes|N=No|U=Unknown",
   "manner_of_death",            107,  107,    1,  "str",  "Manner of death",                                      "1=Accident|2=Suicide|3=Homicide|4=Pending investigation|5=Could not determine|6=Self-Inflicted|7=Natural|blank=Not specified",
   "method_of_disposition",      108,  108,    1,  "str",  "Method of disposition",                                "B=Burial|C=Cremation|D=Donation|E=Entombment|O=Other|R=Removal from jurisdiction|U=Unknown",
@@ -106,26 +103,29 @@ data_multiple_mortality_2021 <- tribble(
   "record_condition_19",        434,  438,    5,  "str",  "Record-axis condition 19",                             "",
   "record_condition_20",        439,  443,    5,  "str",  "Record-axis condition 20",                             "",
 
-  # ── Race and Hispanic Origin (positions 444-490) ──────────────────────────────
-  # NOTE: Bridged-race variables (445-450 in 2018-2020) were REMOVED as of 2021.
-  #       All states completed the 2003 death certificate transition by 2018,
-  #       so only the 1997 OMB race variables remain.
-  "reserved_10",                444,  447,    4,  "str",  "Reserved positions",                                   "",
+  "reserved_10",                444,  444,    1,  "str",  "Reserved position",                                    "",
+
+  # ── Race (positions 445-450) ──────────────────────────────────────────────────
+  # NOTE: 2020 PDF labels this section "RACE" (vs "BRIDGED RACE" in 2019);
+  #       the field content and positions are identical.
+  "race",                       445,  446,    2,  "int",  "Race (reported single or bridged multiple race)",      "01=White|02=Black|03=American Indian (includes Aleuts and Eskimos)|04=Chinese|05=Japanese|06=Hawaiian (includes Part-Hawaiian)|07=Filipino|18=Asian Indian|28=Korean|38=Samoan|48=Vietnamese|58=Guamanian|68=Other Asian or Pacific Islander (areas reporting 18-58)|78=Combined other Asian or Pacific Islander",
+  "bridged_race_flag",          447,  447,    1,  "str",  "Bridged race flag",                                    "1=Race is bridged|blank=Race is not bridged",
   "race_imputation_flag",       448,  448,    1,  "str",  "Race imputation flag",                                 "1=Unknown race is imputed|2=All other races is imputed|blank=Race is not imputed",
-  "reserved_11",                449,  483,   35,  "str",  "Reserved positions",                                   "",
+  "race_recode_3",              449,  449,    1,  "int",  "Race recode 3",                                        "1=White|2=Races other than White or Black|3=Black",
+  "race_recode_5",              450,  450,    1,  "int",  "Race recode 5",                                        "0=Other (Puerto Rico only)|1=White|2=Black|3=American Indian|4=Asian or Pacific Islander",
+
+  "reserved_11",                451,  483,   33,  "str",  "Reserved positions",                                   "",
 
   # ── Hispanic origin (positions 484-488) ──────────────────────────────────────
   "hispanic_origin",            484,  486,    3,  "int",  "Hispanic origin",                                      "100-199=Non-Hispanic|200-209=Spaniard|210-219=Mexican|220=Central and South American|221-230=Central American|231-249=South American|250-259=Latin American|260-269=Puerto Rican|270-274=Cuban|275-279=Dominican|280-299=Other Hispanic|996-999=Unknown",
-  "reserved_12",                487,  488,    2,  "str",  "Reserved positions",                                   "",
+  "reserved_12",                487,  487,    1,  "str",  "Reserved position",                                    "",
+  "hispanic_origin_race_recode", 488,  488,    1,  "int",  "Hispanic origin/race recode",                          "1=Mexican|2=Puerto Rican|3=Cuban|4=Central or South American|5=Other or unknown Hispanic|6=Non-Hispanic white|7=Non-Hispanic black|8=Non-Hispanic other races|9=Hispanic origin unknown",
 
   # ── Race recode 40 (positions 489-490) ───────────────────────────────────────
-  # NOTE: Codes 01-40 only; code 99 (Unknown/Other) not present in 2021+
-  "race_recode_40",             489,  490,    2,  "int",  "Race recode 40 (1997 OMB multiple-race combinations)", "01=White|02=Black|03=American Indian or Alaskan Native (AIAN)|04=Asian Indian|05=Chinese|06=Filipino|07=Japanese|08=Korean|09=Vietnamese|10=Other or Multiple Asian|11=Hawaiian|12=Guamanian|13=Samoan|14=Other or Multiple Pacific Islander|15=Black and White|16=Black and AIAN|17=Black and Asian|18=Black and Native Hawaiian or Other Pacific Islander (NHOPI)|19=AIAN and White|20=AIAN and Asian|21=AIAN and NHOPI|22=Asian and White|23=Asian and NHOPI|24=NHOPI and White|25=Black, AIAN and White|26=Black, AIAN and Asian|27=Black, AIAN and NHOPI|28=Black, Asian and White|29=Black, Asian and NHOPI|30=Black, NHOPI and White|31=AIAN, Asian and White|32=AIAN, NHOPI and White|33=AIAN, Asian and NHOPI|34=Asian, NHOPI and White|35=Black, AIAN, Asian and White|36=Black, AIAN, Asian and NHOPI|37=Black, AIAN, NHOPI and White|38=Black, Asian, NHOPI and White|39=AIAN, Asian, NHOPI and White|40=Black, AIAN, Asian, NHOPI and White",
-
-  "reserved_13",                491,  805,  315,  "str",  "Reserved positions",                                   "",
+  "race_recode_40",             489,  490,    2,  "int",  "Race recode 40 (multiple-race combinations)",          "01=White|02=Black|03=American Indian or Alaskan Native (AIAN)|04=Asian Indian|05=Chinese|06=Filipino|07=Japanese|08=Korean|09=Vietnamese|10=Other or Multiple Asian|11=Hawaiian|12=Guamanian|13=Samoan|14=Other or Multiple Pacific Islander|15=Black and White|16=Black and AIAN|17=Black and Asian|18=Black and Native Hawaiian or Other Pacific Islander (NHOPI)|19=AIAN and White|20=AIAN and Asian|21=AIAN and NHOPI|22=Asian and White|23=Asian and NHOPI|24=NHOPI and White|25=Black, AIAN and White|26=Black, AIAN and Asian|27=Black, AIAN and NHOPI|28=Black, Asian and White|29=Black, Asian and NHOPI|30=Black, NHOPI and White|31=AIAN, Asian and White|32=AIAN, NHOPI and White|33=AIAN, Asian and NHOPI|34=Asian, NHOPI and White|35=Black, AIAN, Asian and White|36=Black, AIAN, Asian and NHOPI|37=Black, AIAN, NHOPI and White|38=Black, Asian, NHOPI and White|39=AIAN, Asian, NHOPI and White|40=Black, AIAN, Asian, NHOPI and White|99=Unknown and Other Race",
 
   # ── Decedent's usual occupation and industry (positions 806-817) ─────────────
-  # 49 states and NYC participating; RI and DC excluded.
+  # NEW in 2020. 46 states/jurisdictions participating; AZ, IA, NC, RI, DC excluded.
   "occupation_4digit",          806,  809,    4,  "int",  "Occupation 4-digit Census code (2012 codes)",          "",
   "occupation_recode",          810,  811,    2,  "int",  "Occupation recode (2-digit NHIS categories)",          "01=Management occupations|02=Business and financial operations|03=Computer and mathematical|04=Architecture and engineering|05=Life, physical, and social science|06=Community and social services|07=Legal|08=Education, training, and library|09=Arts, design, entertainment, sports, and media|10=Healthcare practitioners and technical|11=Healthcare support|12=Protective service|13=Food preparation and serving|14=Building and grounds cleaning and maintenance|15=Personal care and service|16=Sales and related|17=Office and administrative support|18=Farming, fishing, and forestry|19=Construction and extraction|20=Installation, maintenance, and repair|21=Production|22=Transportation and material moving|24=Military|25=Other—Misc (exc housewife)|26=Other—Housewife",
   "industry_4digit",            812,  815,    4,  "int",  "Industry 4-digit Census code (2012 codes)",            "",
@@ -133,4 +133,5 @@ data_multiple_mortality_2021 <- tribble(
 )
 
 
-usethis::use_data(data_multiple_mortality_2021, overwrite = TRUE)
+
+usethis::use_data(data_mortality_multiple_2020, overwrite = TRUE)
