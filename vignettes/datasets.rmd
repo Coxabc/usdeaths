@@ -14,95 +14,16 @@ knitr::opts_chunk$set(
 )
 library(usdeaths)
 library(knitr)
-library(dplyr)
 ```
 
 ## Overview
 
 The `usdeaths` package provides fixed-width file layout metadata for the major
 U.S. vital statistics data products released by the CDC National Center for
-Health Statistics (NCHS). Layout objects describe field positions, data types,
-and code mappings for each year of each dataset. This vignette walks through
-how those layouts work, then describes each dataset family and what you can do
-with it.
-
----
-
-## How Layout Objects Work
-
-Layout objects are **not** the data themselves — they are metadata tables that
-tell the package how to parse the raw fixed-width files you download from CDC.
-Every layout object in `usdeaths` is a tibble with the same 7-column structure:
-
-```{r schema, echo=FALSE}
-schema <- data.frame(
-  Column      = c("name", "start", "end", "size", "type", "description", "codes"),
-  Type        = c("character", "integer", "integer", "integer", "character", "character", "character"),
-  Description = c(
-    "R-friendly field name",
-    "Start position in the fixed-width file (1-indexed)",
-    "End position in the fixed-width file (inclusive)",
-    "Field width — always equals end - start + 1",
-    '"int" or "str"',
-    "Human-readable field description",
-    'Pipe-delimited key=label pairs (e.g. "1=January|2=February"), or "" if no coding'
-  )
-)
-kable(schema, caption = "Shared layout schema for all usdeaths layout objects")
-```
-
-Filler and reserved positions are included as rows (named `filler_1`,
-`filler_2`, etc.) so that gap-and-overlap validation passes cleanly across the
-entire record length.
-
-### Reading data with a layout
-
-The core workflow is always the same regardless of which dataset you are working
-with:
-
-```{r core-workflow, eval=FALSE}
-library(usdeaths)
-
-# 1. Pick a layout for the year you want
-meta <- data_mortality_multiple_2020
-
-# 2. Inspect it — see what fields are available
-meta$name
-head(meta)
-
-# 3. Read the raw fixed-width file
-df <- read_section(
-  data_file = "path/to/Mort2020US.PubUse.zip",
-  meta      = meta
-)
-
-# 4. Decode coded columns into labels
-df$sex_label <- decode_column(
-  x         = df$sex,
-  codes_str = meta$codes[meta$name == "sex"]
-)
-
-# 5. Preview all coded columns at once
-decode_preview(df, meta, sex, race_recode_40, manner_of_death)
-```
-
-### Finding download URLs
-
-The `cdc_link_lookup` table provides direct download URLs scraped from the CDC
-Vital Statistics Online page, so you don't have to hunt through the CDC website
-manually:
-
-```{r lookup-example, eval=FALSE}
-library(dplyr)
-
-# See what sections are available
-cdc_link_lookup |> distinct(section)
-
-# Get download links for a specific section and year range
-cdc_link_lookup |>
-  filter(section == "Mortality Multiple Cause", year >= 2015) |>
-  select(year, us_data_url, us_data_size_mb)
-```
+Health Statistics (NCHS). This vignette describes each dataset family, what the
+underlying files contain, and what kinds of analysis you can do with them. For
+details on how layout objects work and how to read and decode data, see the
+*Working with Layouts* vignette.
 
 ---
 
